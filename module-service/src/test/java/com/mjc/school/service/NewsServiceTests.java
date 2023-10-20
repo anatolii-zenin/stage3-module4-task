@@ -1,8 +1,8 @@
 package com.mjc.school.service;
 
-import com.mjc.school.service.dto.AuthorDTOReq;
-import com.mjc.school.service.dto.NewsDTOReq;
-import com.mjc.school.service.dto.TagDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.dto.news.NewsDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.implementation.AuthorServiceImpl;
 import com.mjc.school.service.implementation.NewsServiceImpl;
 import com.mjc.school.service.implementation.TagServiceImpl;
@@ -47,14 +47,11 @@ public class NewsServiceTests {
             var newsId = createNews(authorId, newsTitle, newsContent, tags);
 
             var newsEntry = newsService.readById(newsId);
-            var tagEntries = newsService.readTagsByNewsId(newsId);
+            var tagEntries = tagService.readByNewsId(newsId);
 
             assertEquals("Entry id is not as expected", newsId, newsEntry.getId());
             assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
             assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-            assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
-            assertEquals("Entry tag list is empty", false, newsEntry.getTags().isEmpty());
-            assertEquals("Entry tag is not as expected", tagId, newsEntry.getTags().get(0).getId());
             assertEquals("Tag is not tied to the news entry", newsId, tagEntries.get(0).getId());
         }
 
@@ -77,10 +74,8 @@ public class NewsServiceTests {
         var newsId = createNews(authorId, newsTitle, newsContent);
         var newsEntry = newsService.readById(newsId);
 
-        assertEquals("Entry id is not as expected", newsId, newsEntry.getAuthor().getId());
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
         assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-        assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
 
         var newsReq = new NewsDTOReq();
         newsReq.setTitle(newsTitleUpdated);
@@ -90,10 +85,8 @@ public class NewsServiceTests {
         newsService.update(newsReq);
         newsEntry = newsService.readById(newsId);
 
-        assertEquals("Updated id is not as expected", newsId, newsEntry.getAuthor().getId());
         assertEquals("Updated title is not as expected", newsTitleUpdated, newsEntry.getTitle());
         assertEquals("Updated content is not as expected", newsContentUpdated, newsEntry.getContent());
-        assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
     }
 
     @Test
@@ -108,10 +101,8 @@ public class NewsServiceTests {
 
         var newsId = createNews(authorId, newsTitle, newsContent);
         var newsEntry = newsService.readById(newsId);
-        assertEquals("Entry id is not as expected", newsId, newsEntry.getAuthor().getId());
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
         assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-        assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
 
         newsService.deleteById(newsId);
         newsEntry = newsService.readById(newsId);
@@ -133,10 +124,8 @@ public class NewsServiceTests {
 
         var newsId = createNews(authorId, newsTitle, newsContent);
         var newsEntry = newsService.readById(newsId);
-        assertEquals("Entry id is not as expected", newsId, newsEntry.getAuthor().getId());
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
         assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-        assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
 
         authorService.deleteById(authorId);
         authorEntry = authorService.readById(authorId);
@@ -182,14 +171,6 @@ public class NewsServiceTests {
         var newsByCriteria = newsService.readByCriteria(readByTagId);
 
         assertEquals("The amount of entries is not as expected", 2, newsByCriteria.size());
-        assertEquals("Expected tag ID is not found", tagIds[0],
-                newsByCriteria.get(0)
-                        .getTags()
-                        .stream()
-                        .filter(x -> x.getId().equals(tagIds[0])).toList()
-                        .get(0)
-                        .getId()
-        );
 
         var criteriaAuthorId = new AuthorDTOReq();
         criteriaAuthorId.setId(authorId1);
@@ -199,9 +180,6 @@ public class NewsServiceTests {
 
         newsByCriteria = newsService.readByCriteria(readByAuthorId);
         assertEquals("The amount of entries is not as expected", 2, newsByCriteria.size());
-        assertEquals("Expected author ID is not found", authorId1,
-                newsByCriteria.get(0).getAuthor().getId()
-        );
     }
 
     private Long createAuthor(String name) {

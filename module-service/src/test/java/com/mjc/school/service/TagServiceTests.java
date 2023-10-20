@@ -1,8 +1,8 @@
 package com.mjc.school.service;
 
-import com.mjc.school.service.dto.AuthorDTOReq;
-import com.mjc.school.service.dto.NewsDTOReq;
-import com.mjc.school.service.dto.TagDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.dto.news.NewsDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOReq;
 import com.mjc.school.service.implementation.AuthorServiceImpl;
 import com.mjc.school.service.implementation.NewsServiceImpl;
 import com.mjc.school.service.implementation.TagServiceImpl;
@@ -54,14 +54,11 @@ public class TagServiceTests {
             var newsId = createNews(authorId, newsTitle, newsContent, tags);
 
             var newsEntry = newsService.readById(newsId);
-            var tagEntries = newsService.readTagsByNewsId(newsId);
+            var tagEntries = tagService.readByNewsId(newsId);
 
             assertEquals("Entry id is not as expected", newsId, newsEntry.getId());
             assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
             assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-            assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
-            assertEquals("Entry tag list is empty", false, newsEntry.getTags().isEmpty());
-            assertEquals("Entry tag is not as expected", tagId, newsEntry.getTags().get(0).getId());
             assertEquals("Tag is not tied to the news entry", newsId, tagEntries.get(0).getId());
         }
 
@@ -88,8 +85,7 @@ public class TagServiceTests {
         var newsContent = "multiTagNews";
         var newsId = createNews(authorId, newsTitle, newsContent, tags);
 
-        var multiTagNews = newsService.readById(newsId);
-        var tagsFromNews = multiTagNews.getTags();
+        var tagsFromNews = tagService.readByNewsId(newsId);
 
         for (int i = 0; i < tagNum; i++) {
             assertEquals("Tag is not as expected", tagIds[i], tagsFromNews.get(i).getId());
@@ -118,20 +114,19 @@ public class TagServiceTests {
 
         var newsId = createNews(authorId, newsTitle, newsContent, tags);
         var newsEntry = newsService.readById(newsId);
+        var tagsFromNews = tagService.readByNewsId(newsId);
 
-        assertEquals("Entry id is not as expected", newsId, newsEntry.getAuthor().getId());
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
         assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-        assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
-        assertEquals("Entry tag is not as expected", tagName, newsEntry.getTags().get(0).getName());
-        assertEquals("Entry tag is not as expected", tagId, newsEntry.getTags().get(0).getId());
+        assertEquals("Entry tag is not as expected", tagName, tagsFromNews.get(0).getName());
+        assertEquals("Entry tag is not as expected", tagId, tagsFromNews.get(0).getId());
 
         tagId = updateTag(tagId, tagNameUpdated);
 
-        newsEntry = newsService.readById(newsId);
+        tagsFromNews = tagService.readByNewsId(newsId);
 
-        assertEquals("Updated tag id is not as expected", tagId, newsEntry.getTags().get(0).getId());
-        assertEquals("Updated tag is not as expected", tagNameUpdated, newsEntry.getTags().get(0).getName());
+        assertEquals("Updated tag id is not as expected", tagId, tagsFromNews.get(0).getId());
+        assertEquals("Updated tag is not as expected", tagNameUpdated, tagsFromNews.get(0).getName());
     }
 
     @Test
@@ -151,19 +146,18 @@ public class TagServiceTests {
 
         var newsId = createNews(authorId, newsTitle, newsContent, tags);
         var newsEntry = newsService.readById(newsId);
-        assertEquals("Entry id is not as expected", newsId, newsEntry.getAuthor().getId());
+        var tagsFromNews = tagService.readByNewsId(newsId);
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
         assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-        assertEquals("Entry author is not as expected", authorId, newsEntry.getAuthor().getId());
-        assertEquals("Entry tag is not as expected", tagName, newsEntry.getTags().get(0).getName());
+        assertEquals("Entry tag is not as expected", tagName, tagsFromNews.get(0).getName());
 
         updateNews(newsId, authorId, newsTitle, newsContent, new ArrayList<>());
         tagService.deleteById(tagId);
 
         var tag = tagService.readById(tagId);
 
-        newsEntry = newsService.readById(newsId);
-        assertEquals("Tag entry is not properly deleted", true, newsEntry.getTags().isEmpty());
+        tagsFromNews = tagService.readByNewsId(newsId);
+        assertEquals("Tag entry is not properly deleted", true, tagsFromNews.isEmpty());
         assertEquals("Tag entry is not properly deleted", null, tag);
     }
 

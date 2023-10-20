@@ -1,6 +1,6 @@
 package com.mjc.school.service;
 
-import com.mjc.school.service.dto.AuthorDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
 import com.mjc.school.service.implementation.AuthorServiceImpl;
 import org.junit.jupiter.api.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
