@@ -30,6 +30,8 @@ public class NewsEntity implements BaseEntity<Long> {
         inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
     )
     private List<TagEntity> tags;
+    @OneToMany(mappedBy = "news", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CommentEntity> comments;
 
     @PrePersist
     public void prePersist() {
