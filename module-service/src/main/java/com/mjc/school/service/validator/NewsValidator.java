@@ -3,7 +3,7 @@ package com.mjc.school.service.validator;
 import com.mjc.school.service.AuthorService;
 import com.mjc.school.service.NewsService;
 import com.mjc.school.service.TagService;
-import com.mjc.school.service.dto.NewsDTOReq;
+import com.mjc.school.service.dto.news.NewsDTOReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

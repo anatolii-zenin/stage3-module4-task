@@ -1,5 +1,7 @@
-package com.mjc.school.service.dto;
+package com.mjc.school.service.dto.news;
 
+import com.mjc.school.service.dto.tag.TagDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
 import lombok.Getter;
 import lombok.Setter;
 
