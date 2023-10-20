@@ -1,6 +1,7 @@
 package com.mjc.school.repository.implementation;
 
 import com.mjc.school.repository.TagRepository;
+import com.mjc.school.repository.model.implementation.NewsEntity;
 import com.mjc.school.repository.model.implementation.TagEntity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -37,11 +38,7 @@ public class TagRepositoryImpl extends AbstractBaseRepositoryImpl<TagEntity> imp
 
     @Override
     public List<TagEntity> readByNewsId(Long newsId) {
-        var findByNewsId = getEntityManager().createQuery("" +
-                "SELECT a FROM " + getTableName() + " a " +
-                "LEFT JOIN FETCH a.news " +
-                "WHERE a.news_id=:newsId", TagEntity.class);
-        findByNewsId.setParameter("newsId",  + newsId);
-        return findByNewsId.getResultList();
+        var newsById = entityManager.find(NewsEntity.class, newsId);
+        return newsById.getTags();
     }
 }

@@ -1,6 +1,6 @@
 package com.mjc.school.repository.implementation;
 
-import com.mjc.school.repository.BaseRepository;
+import com.mjc.school.repository.PaginationCapableRepository;
 import com.mjc.school.repository.model.BaseEntity;
 import org.springframework.stereotype.Repository;
 
@@ -10,11 +10,21 @@ import java.util.Optional;
 
 
 @Repository
-public abstract class AbstractBaseRepositoryImpl<T extends BaseEntity<Long>> implements BaseRepository<T, Long> {
+public abstract class AbstractBaseRepositoryImpl<T extends BaseEntity<Long>> implements PaginationCapableRepository<T, Long> {
     @Override
     public List<T> readAll() {
-        var findAll = getEntityManager().createQuery("SELECT a FROM " + getTableName() + " a", getEntityClass());
+        var findAll = getEntityManager().createQuery(
+            "SELECT a FROM " + getTableName() + " a", getEntityClass());
         return findAll.getResultList();
+    }
+
+    @Override
+    public List<T> readAll(int page, int size) {
+        var getPageOfEntries = getEntityManager().createQuery(
+            "SELECT a FROM " + getTableName() + " a ", getEntityClass());
+        getPageOfEntries.setMaxResults(size);
+        getPageOfEntries.setFirstResult((page - 1)*size);
+        return getPageOfEntries.getResultList();
     }
 
     @Override
