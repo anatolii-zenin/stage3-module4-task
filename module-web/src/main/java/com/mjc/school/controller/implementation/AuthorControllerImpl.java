@@ -1,43 +1,56 @@
 package com.mjc.school.controller.implementation;
 
 import com.mjc.school.controller.AuthorController;
-import com.mjc.school.service.dto.AuthorDTOReq;
-import com.mjc.school.service.dto.AuthorDTOResp;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOResp;
 import com.mjc.school.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@Scope("singleton")
+@RestController
+@RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthorControllerImpl implements AuthorController {
     @Autowired
     AuthorService service;
 
     @Override
-    public List<AuthorDTOResp> readAll() {
-        return service.readAll();
+    @GetMapping(value = "authors")
+    public List<AuthorDTOResp> readAll(
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+        return service.readAll(page, size);
     }
 
     @Override
-    public AuthorDTOResp readById(Long id) {
+    @GetMapping(value = "authors/{id:\\d+}")
+    public AuthorDTOResp readById(@PathVariable Long id) {
         return service.readById(id);
     }
 
     @Override
-    public AuthorDTOResp create(AuthorDTOReq createRequest) {
+    @PostMapping(value = "authors/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AuthorDTOResp create(@RequestBody AuthorDTOReq createRequest) {
         return service.create(createRequest);
     }
 
     @Override
-    public AuthorDTOResp update(AuthorDTOReq updateRequest) {
+    @PatchMapping(value = "authors/update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AuthorDTOResp update(@RequestBody AuthorDTOReq updateRequest) {
         return service.update(updateRequest);
     }
 
     @Override
-    public boolean deleteById(Long id) {
+    @DeleteMapping(value = "authors/{id:\\d+}")
+    public boolean deleteById(@PathVariable Long id) {
         return service.deleteById(id);
+    }
+
+    @Override
+    @GetMapping(value = "news/{id:\\d+}/author")
+    public AuthorDTOResp readByNewsId(@PathVariable Long id) {
+        return service.readAuthorByNewsId(id);
     }
 }

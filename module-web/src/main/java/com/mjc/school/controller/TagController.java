@@ -1,7 +1,10 @@
 package com.mjc.school.controller;
 
-import com.mjc.school.service.dto.TagDTOReq;
-import com.mjc.school.service.dto.TagDTOResp;
+import com.mjc.school.service.dto.tag.TagDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOResp;
 
-public interface TagController extends BaseController<TagDTOReq, TagDTOResp, Long> {
+import java.util.List;
+
+public interface TagController extends RestController<TagDTOReq, TagDTOResp, Long> {
+    List<TagDTOResp> readByNewsId(Long id);
 }

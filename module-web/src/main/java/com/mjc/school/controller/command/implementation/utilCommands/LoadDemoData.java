@@ -22,5 +22,6 @@ public class LoadDemoData implements Command {
         demoDataLoader.populateAuthors();
         demoDataLoader.populateTags();
         demoDataLoader.populateNews();
+        demoDataLoader.populateComments();
     }
 }

@@ -2,60 +2,57 @@ package com.mjc.school.controller.implementation;
 
 import com.mjc.school.controller.NewsController;
 import com.mjc.school.service.NewsService;
-import com.mjc.school.service.dto.AuthorDTOResp;
-import com.mjc.school.service.dto.NewsDTOReq;
-import com.mjc.school.service.dto.NewsDTOResp;
-import com.mjc.school.service.dto.TagDTOResp;
+import com.mjc.school.service.dto.news.NewsDTOReq;
+import com.mjc.school.service.dto.news.NewsDTOResp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
-@Controller
-@Scope("singleton")
+@RestController
+@RequestMapping(value = "/news", produces = MediaType.APPLICATION_JSON_VALUE)
 public class NewsControllerImpl implements NewsController {
     @Autowired
     NewsService service;
 
     @Override
-    public List<NewsDTOResp> readAll() {
+    @GetMapping(value = "")
+    public List<NewsDTOResp> readAll(
+            @RequestParam(name = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(name = "size", required = false, defaultValue = "1") int size
+    ) {
         return service.readAll();
     }
 
     @Override
-    public NewsDTOResp readById(Long id) {
+    @GetMapping(value = "{id:\\d+}")
+    public NewsDTOResp readById(@PathVariable Long id) {
         return service.readById(id);
     }
 
     @Override
-    public NewsDTOResp create(NewsDTOReq createRequest) {
+    @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public NewsDTOResp create(@RequestBody NewsDTOReq createRequest) {
         return service.create(createRequest);
     }
 
     @Override
-    public NewsDTOResp update(NewsDTOReq updateRequest) {
+    @PatchMapping(value = "update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public NewsDTOResp update(@RequestBody NewsDTOReq updateRequest) {
         return service.update(updateRequest);
     }
 
     @Override
-    public boolean deleteById(Long id) {
+    @DeleteMapping(value = "{id:\\d+}")
+    public boolean deleteById(@PathVariable Long id) {
         return service.deleteById(id);
     }
 
     @Override
-    public List<TagDTOResp> readTagsByNewsId(Long id) {
-        return service.readTagsByNewsId(id);
-    }
-
-    @Override
-    public AuthorDTOResp readAuthorByNewsId(Long id) {
-        return service.readAuthorByNewsId(id);
-    }
-
-    @Override
-    public List<NewsDTOResp> readByCriteria(NewsDTOReq req) {
+    @GetMapping(value = "read-by-criteria", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<NewsDTOResp> readByCriteria(@RequestBody NewsDTOReq req) {
         return service.readByCriteria(req);
     }
 }

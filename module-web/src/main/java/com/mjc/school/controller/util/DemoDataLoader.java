@@ -1,11 +1,13 @@
 package com.mjc.school.controller.util;
 
 import com.mjc.school.service.AuthorService;
+import com.mjc.school.service.CommentService;
 import com.mjc.school.service.NewsService;
 import com.mjc.school.service.TagService;
-import com.mjc.school.service.dto.AuthorDTOReq;
-import com.mjc.school.service.dto.NewsDTOReq;
-import com.mjc.school.service.dto.TagDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.dto.comment.CommentDTOReq;
+import com.mjc.school.service.dto.news.NewsDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,8 @@ public class DemoDataLoader {
     NewsService newsService;
     @Autowired
     TagService tagService;
+    @Autowired
+    CommentService commentService;
 
     public void populateAuthors() {
         var authorLines = readAuthorLines();
@@ -56,6 +60,17 @@ public class DemoDataLoader {
             news.setTags(tags);
             var id = newsService.create(news);
             System.out.println(id);
+        }
+    }
+
+    public void populateComments() {
+        var commentNumber = 60;
+        var baseName = "commentContent#";
+        for (int i = 0; i < commentNumber; i++) {
+            var comment = new CommentDTOReq();
+            comment.setContent(baseName + (i+1));
+            comment.setNewsId((long) i%30 + 1);
+            commentService.create(comment);
         }
     }
 
