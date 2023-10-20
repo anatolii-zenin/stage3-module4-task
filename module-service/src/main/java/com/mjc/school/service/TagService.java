@@ -1,8 +1,11 @@
 package com.mjc.school.service;
 
 
-import com.mjc.school.service.dto.TagDTOReq;
-import com.mjc.school.service.dto.TagDTOResp;
+import com.mjc.school.service.dto.tag.TagDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOResp;
 
-public interface TagService extends BaseService<TagDTOReq, TagDTOResp, Long>{
+import java.util.List;
+
+public interface TagService extends PaginationCapableService<TagDTOReq, TagDTOResp, Long>{
+    List<TagDTOResp> readByNewsId(Long id);
 }

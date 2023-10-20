@@ -1,7 +1,7 @@
 package com.mjc.school.service.validator;
 
 import com.mjc.school.service.TagService;
-import com.mjc.school.service.dto.TagDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

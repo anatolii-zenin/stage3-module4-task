@@ -2,7 +2,8 @@ package com.mjc.school.service.mapper;
 
 
 import com.mjc.school.repository.model.implementation.TagEntity;
-import com.mjc.school.service.dto.*;
+import com.mjc.school.service.dto.tag.TagDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;

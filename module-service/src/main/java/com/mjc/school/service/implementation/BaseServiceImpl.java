@@ -1,22 +1,26 @@
 package com.mjc.school.service.implementation;
 
-import com.mjc.school.repository.BaseRepository;
+import com.mjc.school.repository.PaginationCapableRepository;
 import com.mjc.school.repository.model.BaseEntity;
-import com.mjc.school.service.BaseService;
+import com.mjc.school.service.PaginationCapableService;
 import com.mjc.school.service.validator.Validate;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
 public abstract class BaseServiceImpl<Req, Resp, Entity extends BaseEntity<Long>,
-        Repository extends BaseRepository<Entity, Long>>
-        implements BaseService<Req, Resp, Long> {
+        Repository extends PaginationCapableRepository<Entity, Long>>
+        implements PaginationCapableService<Req, Resp, Long> {
 
     @Override
     public List<Resp> readAll() {
-        return fetchAll();
+        return entitiesToDtos(getRepo().readAll());
+    }
+
+    @Override
+    public List<Resp> readAll(int page, int size) {
+        return entitiesToDtos(getRepo().readAll(page, size));
     }
 
     @Override
@@ -44,19 +48,11 @@ public abstract class BaseServiceImpl<Req, Resp, Entity extends BaseEntity<Long>
         return getRepo().deleteById(id);
     }
 
-    protected List<Resp> fetchAll() {
-        List<Entity> entities = getRepo().readAll();
-        List<Resp> news = new ArrayList<>();
-
-        for (var newsEntity : entities)
-            news.add(entityToDto(newsEntity));
-
-        return news;
-    }
-
     protected abstract Entity dtoToEntity(Req dto);
 
-    protected abstract Resp entityToDto(Entity model);
+    protected abstract List<Resp> entitiesToDtos(List<Entity> entities);
+
+    protected abstract Resp entityToDto(Entity entity);
     
     protected abstract Repository getRepo();
 }

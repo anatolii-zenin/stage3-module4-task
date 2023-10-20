@@ -3,18 +3,21 @@ package com.mjc.school.service.implementation;
 import com.mjc.school.repository.TagRepository;
 import com.mjc.school.repository.model.implementation.TagEntity;
 import com.mjc.school.service.TagService;
-import com.mjc.school.service.dto.TagDTOReq;
-import com.mjc.school.service.dto.TagDTOResp;
+import com.mjc.school.service.dto.tag.TagDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOResp;
 import com.mjc.school.service.mapper.TagDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Scope("singleton")
 @Transactional
-public class TagServiceImpl extends BaseServiceImpl<TagDTOReq, TagDTOResp, TagEntity, TagRepository>
+public class TagServiceImpl
+        extends BaseServiceImpl<TagDTOReq, TagDTOResp, TagEntity, TagRepository>
         implements TagService {
     @Autowired
     TagRepository tagRepository;
@@ -26,6 +29,11 @@ public class TagServiceImpl extends BaseServiceImpl<TagDTOReq, TagDTOResp, TagEn
     }
 
     @Override
+    protected List<TagDTOResp> entitiesToDtos(List<TagEntity> tagEntities) {
+        return mapper.entitiesToResps(tagEntities);
+    }
+
+    @Override
     protected TagDTOResp entityToDto(TagEntity tagEntity) {
         return mapper.entityToResp(tagEntity);
     }
@@ -33,5 +41,10 @@ public class TagServiceImpl extends BaseServiceImpl<TagDTOReq, TagDTOResp, TagEn
     @Override
     protected TagRepository getRepo() {
         return tagRepository;
+    }
+
+    @Override
+    public List<TagDTOResp> readByNewsId(Long id) {
+        return entitiesToDtos(tagRepository.readByNewsId(id));
     }
 }

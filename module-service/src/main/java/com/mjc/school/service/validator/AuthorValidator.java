@@ -1,7 +1,7 @@
 package com.mjc.school.service.validator;
 
 import com.mjc.school.service.AuthorService;
-import com.mjc.school.service.dto.AuthorDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

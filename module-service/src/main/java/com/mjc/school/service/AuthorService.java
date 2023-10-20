@@ -1,7 +1,8 @@
 package com.mjc.school.service;
 
-import com.mjc.school.service.dto.AuthorDTOReq;
-import com.mjc.school.service.dto.AuthorDTOResp;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOResp;
 
-public interface AuthorService extends BaseService<AuthorDTOReq, AuthorDTOResp, Long>{
+public interface AuthorService extends PaginationCapableService<AuthorDTOReq, AuthorDTOResp, Long> {
+    AuthorDTOResp readAuthorByNewsId(Long newsId);
 }

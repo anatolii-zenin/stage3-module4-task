@@ -1,8 +1,9 @@
 package com.mjc.school.service.validator;
 
-import com.mjc.school.service.dto.AuthorDTOReq;
-import com.mjc.school.service.dto.NewsDTOReq;
-import com.mjc.school.service.dto.TagDTOReq;
+import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.dto.comment.CommentDTOReq;
+import com.mjc.school.service.dto.news.NewsDTOReq;
+import com.mjc.school.service.dto.tag.TagDTOReq;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -35,7 +36,9 @@ public class ValidatorAspect {
             var validator = applicationContext.getBean(TagValidator.class);
             success = validator.validate((TagDTOReq) arg);
         }
-        else
+        else if (argClass.equals(CommentDTOReq.class)) {
+            return;
+        } else
             throw new RuntimeException("Validator unable to process class: " + argClass);
         if (!success)
             throw new RuntimeException("Validation failed");

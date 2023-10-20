@@ -1,12 +1,10 @@
 package com.mjc.school.service.implementation;
 
 import com.mjc.school.repository.model.implementation.NewsEntity;
-import com.mjc.school.service.dto.AuthorDTOResp;
-import com.mjc.school.service.dto.NewsDTOReq;
+import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.repository.NewsRepository;
 import com.mjc.school.service.NewsService;
-import com.mjc.school.service.dto.NewsDTOResp;
-import com.mjc.school.service.dto.TagDTOResp;
+import com.mjc.school.service.dto.news.NewsDTOResp;
 import com.mjc.school.service.mapper.NewsDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +17,8 @@ import java.util.List;
 @Service
 @Scope("singleton")
 @Transactional
-public class NewsServiceImpl extends BaseServiceImpl<NewsDTOReq, NewsDTOResp, NewsEntity, NewsRepository>
+public class NewsServiceImpl
+        extends BaseServiceImpl<NewsDTOReq, NewsDTOResp, NewsEntity, NewsRepository>
         implements NewsService {
     @Autowired
     NewsRepository newsRepository;
@@ -31,6 +30,11 @@ public class NewsServiceImpl extends BaseServiceImpl<NewsDTOReq, NewsDTOResp, Ne
     }
 
     @Override
+    protected List<NewsDTOResp> entitiesToDtos(List<NewsEntity> newsEntities) {
+        return mapper.newsEntitiesToDto(newsEntities);
+    }
+
+    @Override
     protected NewsDTOResp entityToDto(NewsEntity newsEntity) {
         return mapper.newsToDto(newsEntity);
     }
@@ -38,16 +42,6 @@ public class NewsServiceImpl extends BaseServiceImpl<NewsDTOReq, NewsDTOResp, Ne
     @Override
     protected NewsRepository getRepo() {
         return newsRepository;
-    }
-
-    @Override
-    public List<TagDTOResp> readTagsByNewsId(Long newsId) {
-        return readById(newsId).getTags();
-    }
-
-    @Override
-    public AuthorDTOResp readAuthorByNewsId(Long newsId) {
-        return readById(newsId).getAuthor();
     }
 
     @Override
