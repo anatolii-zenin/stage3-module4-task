@@ -18,7 +18,7 @@ public class AuthorEntity implements BaseEntity<Long> {
     private String name;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    @OneToMany(mappedBy = "author", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "author", cascade = {CascadeType.REMOVE, CascadeType.REFRESH})
     private List<NewsEntity> news;
 
     @PrePersist

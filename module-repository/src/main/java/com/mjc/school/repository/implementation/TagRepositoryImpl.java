@@ -15,11 +15,6 @@ import java.util.List;
 public class TagRepositoryImpl extends AbstractBaseRepositoryImpl<TagEntity> implements TagRepository {
     @PersistenceContext
     EntityManager entityManager;
-    @Override
-    public TagEntity update(TagEntity entity) {
-        getEntityManager().merge(entity);
-        return getEntityManager().find(getEntityClass(), entity.getId());
-    }
 
     @Override
     protected Class<TagEntity> getEntityClass() {

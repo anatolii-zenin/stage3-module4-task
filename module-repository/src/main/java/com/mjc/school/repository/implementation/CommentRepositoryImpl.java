@@ -17,14 +17,6 @@ public class CommentRepositoryImpl extends AbstractBaseRepositoryImpl<CommentEnt
     EntityManager entityManager;
 
     @Override
-    public CommentEntity update(CommentEntity entity) {
-        CommentEntity dbEntity = getEntityManager().find(getEntityClass(), entity.getId());
-        entity.setCreateDate(dbEntity.getCreateDate());
-        getEntityManager().merge(entity);
-        return getEntityManager().find(getEntityClass(), dbEntity.getId());
-    }
-
-    @Override
     protected Class<CommentEntity> getEntityClass() {
         return CommentEntity.class;
     }

@@ -34,12 +34,13 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseEntity<Long>> imp
 
     @Override
     public T create(T entity) {
-        var mergedEntity = getEntityManager().merge(entity);
-        return  getEntityManager().find(getEntityClass(), mergedEntity.getId());
+        return merge(entity);
     }
 
     @Override
-    public abstract T update(T entity);
+    public T update(T entity) {
+        return merge(entity);
+    }
 
     @Override
     public boolean deleteById(Long id) {
@@ -60,4 +61,9 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseEntity<Long>> imp
     protected abstract Class<T> getEntityClass();
     protected abstract EntityManager getEntityManager();
     protected abstract String getTableName();
+
+    private T merge(T entity) {
+        var mergedEntity = getEntityManager().merge(entity);
+        return getEntityManager().find(getEntityClass(), mergedEntity.getId());
+    }
 }

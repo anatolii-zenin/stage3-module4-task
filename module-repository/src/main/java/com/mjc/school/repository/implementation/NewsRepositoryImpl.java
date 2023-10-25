@@ -20,14 +20,6 @@ public class NewsRepositoryImpl extends AbstractBaseRepositoryImpl<NewsEntity>
     @PersistenceContext
     EntityManager entityManager;
 
-        @Override
-    public NewsEntity update(NewsEntity entity) {
-        NewsEntity dbEntity = getEntityManager().find(getEntityClass(), entity.getId());
-        entity.setCreateDate(dbEntity.getCreateDate());
-        getEntityManager().merge(entity);
-        return getEntityManager().find(getEntityClass(), dbEntity.getId());
-    }
-
     @Override
     protected Class<NewsEntity> getEntityClass() {
         return NewsEntity.class;
@@ -45,7 +37,6 @@ public class NewsRepositoryImpl extends AbstractBaseRepositoryImpl<NewsEntity>
 
     @Override
     public List<NewsEntity> readNewsByCriteria(NewsEntity req) {
-        //TODO: refactor
         var criteriaBuilder = entityManager.getCriteriaBuilder();
         var criteriaQuery = criteriaBuilder.createQuery(NewsEntity.class);
         Root<NewsEntity> news = criteriaQuery.from(NewsEntity.class);
