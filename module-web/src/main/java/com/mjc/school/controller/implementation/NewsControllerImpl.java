@@ -51,7 +51,7 @@ public class NewsControllerImpl implements NewsController {
     }
 
     @Override
-    @DeleteMapping(value = "{id:\\d+}")
+    @DeleteMapping(value = "{id:\\d+}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean deleteById(@PathVariable Long id) {
         return service.deleteById(id);

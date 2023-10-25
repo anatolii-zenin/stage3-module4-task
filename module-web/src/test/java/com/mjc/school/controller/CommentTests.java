@@ -111,8 +111,8 @@ public class CommentTests {
         var commentId = createComment(newsId, DEFAULT_COMMENT);
 
         given()
-                .when().delete(COMMENTS + commentId +"/delete")
+                .when().delete(COMMENTS + commentId + "/delete")
                 .then()
-                .statusCode(404);
+                .statusCode(204);
     }
 }

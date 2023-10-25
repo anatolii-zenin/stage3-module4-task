@@ -81,6 +81,6 @@ public class AuthorTests {
         given()
                 .when().delete(AUTHORS + id +"/delete")
                 .then()
-                .statusCode(404);
+                .statusCode(204);
     }
 }

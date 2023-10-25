@@ -49,7 +49,7 @@ public class AuthorControllerImpl implements AuthorController {
     }
 
     @Override
-    @DeleteMapping(value = "authors/{id:\\d+}")
+    @DeleteMapping(value = "authors/{id:\\d+}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean deleteById(@PathVariable Long id) {
         return service.deleteById(id);

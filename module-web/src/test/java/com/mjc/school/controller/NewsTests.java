@@ -90,8 +90,8 @@ public class NewsTests {
                 new ArrayList<>());
 
         given()
-                .when().delete(NEWS + newsId +"/delete")
+                .when().delete(NEWS + newsId + "/delete")
                 .then()
-                .statusCode(404);
+                .statusCode(204);
     }
 }

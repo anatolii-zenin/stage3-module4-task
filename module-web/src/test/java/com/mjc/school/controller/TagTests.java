@@ -93,11 +93,11 @@ public class TagTests {
 
     @Test
     public void deleteTagTest() {
-
         var id = createTag(DEFAULT_TAG_NAME);
+
         given()
-                .when().delete(TAGS + id +"/delete")
+                .when().delete(TAGS + id + "/delete")
                 .then()
-                .statusCode(404);
+                .statusCode(204);
     }
 }

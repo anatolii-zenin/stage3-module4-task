@@ -51,9 +51,9 @@ public class TagControllerImpl implements TagController {
     }
 
     @Override
-    @DeleteMapping(value = "tags/{id:\\d+}")
+    @DeleteMapping(value = "tags/{id:\\d+}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean deleteById(Long id) {
+    public boolean deleteById(@PathVariable Long id) {
         return service.deleteById(id);
     }
 

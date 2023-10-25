@@ -49,7 +49,7 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @Override
-    @DeleteMapping(value = "/comments/{id:\\d+}")
+    @DeleteMapping(value = "/comments/{id:\\d+}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean deleteById(@PathVariable Long id) {
         return service.deleteById(id);
