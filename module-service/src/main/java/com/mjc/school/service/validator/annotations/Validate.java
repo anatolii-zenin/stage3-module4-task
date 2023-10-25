@@ -1,4 +1,4 @@
-package com.mjc.school.service.validator;
+package com.mjc.school.service.validator.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
