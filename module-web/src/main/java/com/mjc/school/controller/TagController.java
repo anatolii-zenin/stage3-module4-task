@@ -5,6 +5,6 @@ import com.mjc.school.service.dto.tag.TagDTOResp;
 
 import java.util.List;
 
-public interface TagController extends RestController<TagDTOReq, TagDTOResp, Long> {
+public interface TagController extends BaseController<TagDTOReq, TagDTOResp, Long> {
     List<TagDTOResp> readByNewsId(Long id);
 }

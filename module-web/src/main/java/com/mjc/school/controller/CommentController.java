@@ -5,6 +5,6 @@ import com.mjc.school.service.dto.comment.CommentDTOResp;
 
 import java.util.List;
 
-public interface CommentController extends RestController<CommentDTOReq, CommentDTOResp, Long>{
+public interface CommentController extends BaseController<CommentDTOReq, CommentDTOResp, Long> {
     List<CommentDTOResp> readByNewsId(Long id);
 }
