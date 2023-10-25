@@ -56,8 +56,8 @@ public class DemoDataLoader {
             var tags = chooseTags(i);
             news.setTitle(titleLines.get(i));
             news.setContent(contentLines.get(i));
-            news.getAuthor().setId((long) i+1);
-            news.setTags(tags);
+            news.setAuthorId((long) i+1);
+            news.setTagIds(tags);
             var id = newsService.create(news);
             System.out.println(id);
         }
@@ -102,16 +102,12 @@ public class DemoDataLoader {
         return readFile(authorFileName);
     }
 
-    private List<TagDTOReq> chooseTags(int i) {
-        var tags = new ArrayList<TagDTOReq>();
-        var tag1 = new TagDTOReq();
-        var tag2 = new TagDTOReq();
+    private List<Long> chooseTags(int i) {
+        var tags = new ArrayList<Long>();
         Long id1 = i > 2L ? i - (long) i%2L : 1L;
         Long id2 = (long) i + 1;
-        tag1.setId(id1);
-        tag2.setId(id2);
-        tags.add(tag1);
-        tags.add(tag2);
+        tags.add(id1);
+        tags.add(id2);
         return tags;
     }
 }
