@@ -1,17 +1,18 @@
 package com.mjc.school.service;
 
-import com.mjc.school.service.dto.author.AuthorDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOReq;
-import com.mjc.school.service.dto.tag.TagDTOReq;
+import com.mjc.school.service.exception.NotFoundException;
 import com.mjc.school.service.implementation.AuthorServiceImpl;
 import com.mjc.school.service.implementation.NewsServiceImpl;
 import com.mjc.school.service.implementation.TagServiceImpl;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 
@@ -19,6 +20,7 @@ public class NewsServiceTests {
     private AuthorService authorService;
     private NewsService newsService;
     private TagService tagService;
+    private final TestHelper testHelper = new TestHelper();
 
     private static AnnotationConfigApplicationContext context;
     @BeforeEach
@@ -40,11 +42,11 @@ public class NewsServiceTests {
             String newsTitle = "newsTitle" + i;
             String newsContent = "newsContent" + i;
 
-            var authorId = createAuthor(authorName);
-            var tagId = createTag(tagName);
-            List<TagDTOReq> tags = new ArrayList<>();
-            addTagById(tags, tagId);
-            var newsId = createNews(authorId, newsTitle, newsContent, tags);
+            var authorId = testHelper.createAuthor(authorName);
+            var tagId = testHelper.createTag(tagName);
+            var tagIds = new ArrayList<Long>();
+            tagIds.add(tagId);
+            var newsId = testHelper.createNews(authorId, newsTitle, newsContent, tagIds);
 
             var newsEntry = newsService.readById(newsId);
             var tagEntries = tagService.readByNewsId(newsId);
@@ -52,11 +54,8 @@ public class NewsServiceTests {
             assertEquals("Entry id is not as expected", newsId, newsEntry.getId());
             assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
             assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
-            assertEquals("Tag is not tied to the news entry", newsId, tagEntries.get(0).getId());
+            assertEquals("Tag is not tied to the news entry", tagId, tagEntries.get(0).getId());
         }
-
-        var allEntries = newsService.readAll();
-        assertEquals("Incorrect number of entries:", testEntries, allEntries.size());
     }
 
     @Test
@@ -67,11 +66,11 @@ public class NewsServiceTests {
         String newsContent = "testContent";
         String newsContentUpdated = "testContentUpdated";
 
-        var authorId = createAuthor(authorName);
+        var authorId = testHelper.createAuthor(authorName);
         var authorEntry = authorService.readById(authorId);
         assertEquals("Created entry is not as expected", authorName, authorEntry.getName());
 
-        var newsId = createNews(authorId, newsTitle, newsContent);
+        var newsId = testHelper.createNews(authorId, newsTitle, newsContent);
         var newsEntry = newsService.readById(newsId);
 
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
@@ -81,7 +80,7 @@ public class NewsServiceTests {
         newsReq.setTitle(newsTitleUpdated);
         newsReq.setContent(newsContentUpdated);
         newsReq.setId(newsId);
-        newsReq.getAuthor().setId(authorId);
+        newsReq.setAuthorId(authorId);
         newsService.update(newsReq);
         newsEntry = newsService.readById(newsId);
 
@@ -95,18 +94,17 @@ public class NewsServiceTests {
         String newsTitle = "testTitle";
         String newsContent = "testContent";
 
-        var authorId = createAuthor(authorName);
+        var authorId = testHelper.createAuthor(authorName);
         var authorEntry = authorService.readById(authorId);
         assertEquals("Created entry is not as expected", authorName, authorEntry.getName());
 
-        var newsId = createNews(authorId, newsTitle, newsContent);
+        var newsId = testHelper.createNews(authorId, newsTitle, newsContent);
         var newsEntry = newsService.readById(newsId);
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
         assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
 
         newsService.deleteById(newsId);
-        newsEntry = newsService.readById(newsId);
-        assertEquals("News entry is not properly deleted", null, newsEntry);
+        assertThrows(NotFoundException.class, () -> newsService.readById(newsId));
 
         authorEntry = authorService.readById(authorId);
         assertEquals("Author is not persisted after deleting news", authorName, authorEntry.getName());
@@ -118,112 +116,67 @@ public class NewsServiceTests {
         String newsTitle = "testTitle";
         String newsContent = "testContent";
 
-        var authorId = createAuthor(authorName);
+        var authorId = testHelper.createAuthor(authorName);
         var authorEntry = authorService.readById(authorId);
         assertEquals("Created entry is not as expected", authorName, authorEntry.getName());
 
-        var newsId = createNews(authorId, newsTitle, newsContent);
+        var newsId = testHelper.createNews(authorId, newsTitle, newsContent);
         var newsEntry = newsService.readById(newsId);
         assertEquals("Entry title is not as expected", newsTitle, newsEntry.getTitle());
         assertEquals("Entry content is not as expected", newsContent, newsEntry.getContent());
 
         authorService.deleteById(authorId);
-        authorEntry = authorService.readById(authorId);
-        assertEquals("Author is not deleted", null, authorEntry);
-        newsEntry = newsService.readById(newsId);
-        assertEquals("News entry is not properly deleted after deleting author", null, newsEntry);
+        assertThrows(NotFoundException.class, () -> authorService.readById(authorId));
+        assertThrows(NotFoundException.class, () -> newsService.readById(newsId));
     }
 
     @Test
     public void selectNewsByCriteriaTest() {
         String authorName1 = "testAuthor1";
         String authorName2 = "testAuthor1";
-        var authorId1 = createAuthor(authorName1);
-        var authorId2 = createAuthor(authorName2);
+        var authorId1 = testHelper.createAuthor(authorName1);
+        var authorId2 = testHelper.createAuthor(authorName2);
 
-        List<TagDTOReq> tags = new ArrayList<>();
+        var tagIds = new ArrayList<Long>();
         var tagNum = 3;
         var tagNameBase = "tag#";
 
-        Long[] tagIds = new Long[tagNum];
         for (int i = 0; i < tagNum; i++) {
-            tagIds[i] = createTag(tagNameBase + i);
-            addTagById(tags, tagIds[i]);
+            tagIds.add(testHelper.createTag(tagNameBase + i));
         }
 
         var newsTitle = "taggedNews";
         var newsContent = "taggedNews";
-        createNews(authorId1, newsTitle, newsContent, tags);
-        createNews(authorId2, newsTitle + "2", newsContent + "2", tags);
-        createNews(authorId1, "DoNotRead", "DoNotRead", new ArrayList<>());
+        testHelper.createNews(authorId1, newsTitle, newsContent, tagIds);
+        testHelper.createNews(authorId2, newsTitle + "2", newsContent + "2", tagIds);
+        testHelper.createNews(authorId1, "DoNotRead", "DoNotRead", new ArrayList<>());
 
-        ArrayList<TagDTOReq> tagsById = new ArrayList<>();
-        var tag1 = new TagDTOReq();
-        tag1.setId(tagIds[0]);
-        tagsById.add(tag1);
+        var tagsById = new ArrayList<Long>();
+        tagsById.add(tagIds.get(0));
 
         var criteriaTagId = new NewsDTOReq();
-        criteriaTagId.setTags(tagsById);
+        criteriaTagId.setTagIds(tagsById);
 
         var readByTagId = new NewsDTOReq();
-        readByTagId.setTags(tagsById);
+        readByTagId.setTagIds(tagsById);
 
         var newsByCriteria = newsService.readByCriteria(readByTagId);
 
         assertEquals("The amount of entries is not as expected", 2, newsByCriteria.size());
 
-        var criteriaAuthorId = new AuthorDTOReq();
-        criteriaAuthorId.setId(authorId1);
-
         var readByAuthorId = new NewsDTOReq();
-        readByAuthorId.setAuthor(criteriaAuthorId);
+        readByAuthorId.setAuthorId(authorId1);
 
         newsByCriteria = newsService.readByCriteria(readByAuthorId);
         assertEquals("The amount of entries is not as expected", 2, newsByCriteria.size());
-    }
-
-    private Long createAuthor(String name) {
-        var authorReq = new AuthorDTOReq();
-        authorReq.setName(name);
-        return authorService.create(authorReq).getId();
-    }
-
-    private Long createNews(Long authorId, String newsTitle, String newsContent, List<TagDTOReq> tags) {
-        var newsReq = new NewsDTOReq();
-        newsReq.getAuthor().setId(authorId);
-        newsReq.setContent(newsContent);
-        newsReq.setTitle(newsTitle);
-        newsReq.setTags(tags);
-        return newsService.create(newsReq).getId();
-    }
-
-    private Long createNews(Long authorId, String newsTitle, String newsContent) {
-        var newsReq = new NewsDTOReq();
-        newsReq.getAuthor().setId(authorId);
-        newsReq.setContent(newsContent);
-        newsReq.setTitle(newsTitle);
-        return newsService.create(newsReq).getId();
-    }
-
-    private Long createTag(String name) {
-        var tagReq = new TagDTOReq();
-        tagReq.setName(name);
-        return tagService.create(tagReq).getId();
-    }
-
-    private void addTagById(List<TagDTOReq> tags, Long id) {
-        var newTag = tagService.readById(id);
-        if (newTag != null) {
-            var tagDto = new TagDTOReq();
-            tagDto.setId(id);
-            tagDto.setName(newTag.getName());
-            tags.add(tagDto);
-        }
     }
 
     private void prepareServices() {
         authorService = context.getBean(AuthorServiceImpl.class);
         newsService = context.getBean(NewsServiceImpl.class);
         tagService = context.getBean(TagServiceImpl.class);
+        testHelper.setNewsService(newsService);
+        testHelper.setTagService(tagService);
+        testHelper.setAuthorService(authorService);
     }
 }

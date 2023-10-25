@@ -1,20 +1,26 @@
 package com.mjc.school.service;
 
 import com.mjc.school.service.dto.author.AuthorDTOReq;
+import com.mjc.school.service.exception.NotFoundException;
 import com.mjc.school.service.implementation.AuthorServiceImpl;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 
 public class AuthorServiceTests {
     private AuthorService authorService;
+    private final TestHelper testHelper = new TestHelper();
 
     private static AnnotationConfigApplicationContext context;
     @BeforeEach
     public void setUp() {
         context = new AnnotationConfigApplicationContext(ServiceSpringConfig.class);
+        prepareServices();
     }
     @AfterEach
     public void tearDown() {
@@ -29,7 +35,7 @@ public class AuthorServiceTests {
         for (int i = 0; i < testEntries; i++) {
             String authorName = "testAuthor" + i;
 
-            var authorId = createAuthor(authorName);
+            var authorId = testHelper.createAuthor(authorName);
             var author = authorService.readById(authorId);
 
             assertEquals("Entry id is not as expected", authorId, author.getId());
@@ -74,13 +80,12 @@ public class AuthorServiceTests {
         assertEquals("Created entry is not as expected", authorName, entry.getName());
 
         authorService.deleteById(id);
-        entry = authorService.readById(id);
-        assertEquals("Entry is not properly deleted", null, entry);
+        assertThrows(NotFoundException.class, () -> authorService.readById(id));
     }
 
-    private Long createAuthor(String name) {
-        var authorReq = new AuthorDTOReq();
-        authorReq.setName(name);
-        return authorService.create(authorReq).getId();
+    private void prepareServices() {
+        authorService = context.getBean(AuthorServiceImpl.class);
+        testHelper.setAuthorService(authorService);
     }
+
 }
