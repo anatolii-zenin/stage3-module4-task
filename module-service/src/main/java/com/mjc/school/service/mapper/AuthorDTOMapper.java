@@ -5,11 +5,14 @@ import com.mjc.school.service.dto.author.AuthorDTOReq;
 import com.mjc.school.service.dto.author.AuthorDTOResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 @Component
 public abstract class AuthorDTOMapper {
 
@@ -19,5 +22,15 @@ public abstract class AuthorDTOMapper {
     @Mapping(ignore = true, target = "createDate")
     @Mapping(ignore = true, target = "lastUpdateDate")
     @Mapping(ignore = true, target = "news")
+    public abstract void updateEntityFromDto(AuthorDTOReq req, @MappingTarget AuthorEntity entity);
+    @Mapping(ignore = true, target = "createDate")
+    @Mapping(ignore = true, target = "lastUpdateDate")
+    @Mapping(ignore = true, target = "news")
     public abstract AuthorEntity authorReqToEntity(AuthorDTOReq authorDTOReq);
+
+    public AuthorEntity authorIdToEntity(Long id) {
+        var authorEntity = new AuthorEntity();
+        authorEntity.setId(id);
+        return authorEntity;
+    }
 }
