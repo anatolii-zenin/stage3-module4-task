@@ -5,6 +5,7 @@ import com.mjc.school.service.NewsService;
 import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ public class NewsControllerImpl implements NewsController {
 
     @Override
     @GetMapping(value = "")
+    @ResponseStatus(HttpStatus.OK)
     public List<NewsDTOResp> readAll(
             @RequestParam(name = "page", required = false, defaultValue = "1") int page,
             @RequestParam(name = "size", required = false, defaultValue = "1") int size
@@ -28,30 +30,36 @@ public class NewsControllerImpl implements NewsController {
 
     @Override
     @GetMapping(value = "{id:\\d+}")
+    @ResponseStatus(HttpStatus.OK)
     public NewsDTOResp readById(@PathVariable Long id) {
         return service.readById(id);
     }
 
     @Override
     @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public NewsDTOResp create(@RequestBody NewsDTOReq createRequest) {
         return service.create(createRequest);
     }
 
     @Override
-    @PatchMapping(value = "update", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public NewsDTOResp update(@RequestBody NewsDTOReq updateRequest) {
+    @PatchMapping(value = "{id:\\d+}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public NewsDTOResp update(@PathVariable Long id, @RequestBody NewsDTOReq updateRequest) {
+        updateRequest.setId(id);
         return service.update(updateRequest);
     }
 
     @Override
     @DeleteMapping(value = "{id:\\d+}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean deleteById(@PathVariable Long id) {
         return service.deleteById(id);
     }
 
     @Override
     @GetMapping(value = "read-by-criteria", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
     public List<NewsDTOResp> readByCriteria(@RequestBody NewsDTOReq req) {
         return service.readByCriteria(req);
     }
