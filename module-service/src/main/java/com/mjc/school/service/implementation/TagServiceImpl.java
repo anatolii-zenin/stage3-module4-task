@@ -44,6 +44,11 @@ public class TagServiceImpl
     }
 
     @Override
+    protected void updateEntityFromDto(TagDTOReq tagDTOReq, TagEntity entity) {
+        mapper.updateEntityFromDto(tagDTOReq, entity);
+    }
+
+    @Override
     public List<TagDTOResp> readByNewsId(Long id) {
         return entitiesToDtos(tagRepository.readByNewsId(id));
     }

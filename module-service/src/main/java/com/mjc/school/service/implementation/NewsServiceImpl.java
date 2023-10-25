@@ -1,9 +1,9 @@
 package com.mjc.school.service.implementation;
 
-import com.mjc.school.repository.model.implementation.NewsEntity;
-import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.repository.NewsRepository;
+import com.mjc.school.repository.model.implementation.NewsEntity;
 import com.mjc.school.service.NewsService;
+import com.mjc.school.service.dto.news.NewsDTOReq;
 import com.mjc.school.service.dto.news.NewsDTOResp;
 import com.mjc.school.service.mapper.NewsDTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ public class NewsServiceImpl
     NewsRepository newsRepository;
     @Autowired
     NewsDTOMapper mapper;
+
     @Override
     protected NewsEntity dtoToEntity(NewsDTOReq newsDTOReq) {
         return mapper.newsReqToEntity(newsDTOReq);
@@ -42,6 +43,11 @@ public class NewsServiceImpl
     @Override
     protected NewsRepository getRepo() {
         return newsRepository;
+    }
+
+    @Override
+    protected void updateEntityFromDto(NewsDTOReq req, NewsEntity entity) {
+        mapper.updateEntityFromDto(req, entity);
     }
 
     @Override

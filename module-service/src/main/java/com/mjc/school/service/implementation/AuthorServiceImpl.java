@@ -45,6 +45,11 @@ public class AuthorServiceImpl
     }
 
     @Override
+    protected void updateEntityFromDto(AuthorDTOReq authorDTOReq, AuthorEntity entity) {
+        mapper.updateEntityFromDto(authorDTOReq, entity);
+    }
+
+    @Override
     public AuthorDTOResp readAuthorByNewsId(Long newsId) {
         var entity = authorRepository.readByNewsId(newsId);
         return entity.map(this::entityToDto).orElse(null);

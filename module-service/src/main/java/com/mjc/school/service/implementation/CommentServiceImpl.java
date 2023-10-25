@@ -44,6 +44,11 @@ public class CommentServiceImpl
     }
 
     @Override
+    protected void updateEntityFromDto(CommentDTOReq commentDTOReq, CommentEntity entity) {
+        mapper.updateEntityFromDto(commentDTOReq, entity);
+    }
+
+    @Override
     public List<CommentDTOResp> readCommentsByNewsId(Long newsId) {
         return entitiesToDtos(commentRepository.readByNewsId(newsId));
     }
