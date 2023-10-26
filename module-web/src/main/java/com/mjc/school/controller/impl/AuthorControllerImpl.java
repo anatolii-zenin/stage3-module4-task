@@ -1,4 +1,4 @@
-package com.mjc.school.controller.implementation;
+package com.mjc.school.controller.impl;
 
 import com.mjc.school.controller.AuthorController;
 import com.mjc.school.service.dto.author.AuthorDTOReq;
