@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AuthorControllerImpl implements AuthorController {
+public class CAuthorController implements AuthorController {
     @Autowired
     AuthorService service;
 
@@ -51,8 +51,8 @@ public class AuthorControllerImpl implements AuthorController {
     @Override
     @DeleteMapping(value = "authors/{id:\\d+}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean deleteById(@PathVariable Long id) {
-        return service.deleteById(id);
+    public void deleteById(@PathVariable Long id) {
+        service.deleteById(id);
     }
 
     @Override

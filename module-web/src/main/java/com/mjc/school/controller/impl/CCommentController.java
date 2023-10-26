@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CommentControllerImpl implements CommentController {
+public class CCommentController implements CommentController {
     @Autowired
     CommentService service;
     @Override
@@ -51,8 +51,8 @@ public class CommentControllerImpl implements CommentController {
     @Override
     @DeleteMapping(value = "/comments/{id:\\d+}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean deleteById(@PathVariable Long id) {
-        return service.deleteById(id);
+    public void deleteById(@PathVariable Long id) {
+        service.deleteById(id);
     }
 
     @Override

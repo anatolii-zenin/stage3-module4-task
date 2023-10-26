@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/news", produces = MediaType.APPLICATION_JSON_VALUE)
-public class NewsControllerImpl implements NewsController {
+public class CNewsController implements NewsController {
     @Autowired
     NewsService service;
 
@@ -53,8 +53,8 @@ public class NewsControllerImpl implements NewsController {
     @Override
     @DeleteMapping(value = "{id:\\d+}/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public boolean deleteById(@PathVariable Long id) {
-        return service.deleteById(id);
+    public void deleteById(@PathVariable Long id) {
+        service.deleteById(id);
     }
 
     @Override
